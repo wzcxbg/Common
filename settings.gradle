@@ -20,6 +20,13 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
         google()
         mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/wzcxbg/common")
+            credentials {
+                username = "wzcxbg"
+                password = "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"
+            }
+        }
     }
 }
 rootProject.name = "Common"

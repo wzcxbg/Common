@@ -48,15 +48,21 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
 }
 
+
+
 afterEvaluate {
     publishing {
         repositories {
             maven {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/wzcxbg/common")
+                Properties properties = new Properties()
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+                def uname = properties.getProperty('github.uname')
+                def token = properties.getProperty('github.token')
                 credentials {
-                    username = "wzcxbg"
-                    password = "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"
+                    username = uname
+                    password = token
                 }
             }
         }
@@ -64,16 +70,16 @@ afterEvaluate {
         publications {
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.sliver.common'
-                artifactId = 'final'
+                groupId = 'com.sliver'
+                artifactId = 'common'
+                version = '2.0'
+            }
+            debug(MavenPublication) {
+                from components.debug
+                groupId = 'com.sliver'
+                artifactId = 'common-debug'
                 version = '1.0'
             }
-            /*debug(MavenPublication) {
-                from components.debug
-                groupId = 'com.sliver.common'
-                artifactId = 'final-debug'
-                version = '1.0'
-            }*/
         }
     }
 }

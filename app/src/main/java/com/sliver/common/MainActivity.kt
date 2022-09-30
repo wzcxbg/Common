@@ -1,12 +1,10 @@
 package com.sliver.common
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import com.sliver.common.base.BaseActivity
+import com.sliver.common.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class MainActivity : BaseActivity<ActivityMainBinding>() {
+    override fun initView() {
 
-        setContentView(R.layout.activity_main)
     }
 }
