@@ -1,6 +1,6 @@
 ### How to use?
 
-#### edit your project's `settings.gradle` file, add follow line like this
+#### 1. Edit your project's `settings.gradle` file, add follow line like this
 
 ```
 dependencyResolutionManagement {
@@ -18,10 +18,10 @@ rootProject.name = "Common"
 include ':app'
 ```
 
-#### edit your module's `build.gradle` file, add dependencie in the dependencies node
+#### 2. Edit your module's `build.gradle` file, add dependencie in the dependencies node
 
 ```
 implementation 'com.sliver:common:1.0'
 ```
 
-#### click 'sync' and enjoy it
+#### 3. Click 'sync' Button and enjoy it
