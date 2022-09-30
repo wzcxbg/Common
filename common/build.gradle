@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
+    id 'maven-publish'
 }
 
 android {
@@ -45,4 +46,34 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+}
+
+afterEvaluate {
+    publishing {
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/wzcxbg/common")
+                credentials {
+                    username = "wzcxbg"
+                    password = "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"
+                }
+            }
+        }
+
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.sliver.common'
+                artifactId = 'final'
+                version = '1.0'
+            }
+            debug(MavenPublication) {
+                from components.debug
+                groupId = 'com.sliver.common'
+                artifactId = 'final-debug'
+                version = '1.0'
+            }
+        }
+    }
 }
