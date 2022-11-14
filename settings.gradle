@@ -1,25 +1,26 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://jitpack.io' }
-        gradlePluginPortal()
-        google()
-        mavenCentral()
+
     }
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        google()
+        mavenCentral()
         maven { url 'https://maven.aliyun.com/repository/public' }
         maven { url 'https://maven.aliyun.com/repository/jcenter' }
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url 'https://maven.aliyun.com/repository/google' }
         maven { url 'https://jitpack.io' }
-        google()
-        mavenCentral()
         maven {
             url = uri("https://maven.pkg.github.com/wzcxbg/common")
             credentials {
@@ -32,3 +33,5 @@ dependencyResolutionManagement {
 rootProject.name = "Common"
 include ':app'
 include ':common'
+include ':config-ksp-compiler'
+include ':config-annotation'

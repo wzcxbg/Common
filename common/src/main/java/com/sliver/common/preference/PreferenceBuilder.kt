@@ -1,10 +1,9 @@
 package com.sliver.common.preference
 
-import android.util.Log
-import com.sliver.common.preference.annotation.PreferenceKey
-import com.sliver.common.preference.annotation.PreferenceName
 import com.sliver.common.preference.target.Target
 import com.sliver.common.preference.target.TargetFactory
+import com.sliver.config_annotation.PreferenceKey
+import com.sliver.config_annotation.PreferenceName
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy

@@ -1,7 +1,7 @@
 package com.sliver.common.preference
 
-import com.sliver.common.preference.annotation.PreferenceKey
-import com.sliver.common.preference.annotation.PreferenceName
+import com.sliver.config_annotation.PreferenceKey
+import com.sliver.config_annotation.PreferenceName
 
 @PreferenceName("user")
 interface Preference {
