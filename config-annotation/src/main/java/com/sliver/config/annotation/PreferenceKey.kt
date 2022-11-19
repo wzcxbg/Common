@@ -1,4 +1,4 @@
-package com.sliver.config_annotation
+package com.sliver.config.annotation
 
 @Target(AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)

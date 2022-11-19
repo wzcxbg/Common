@@ -1,4 +1,4 @@
-package com.sliver.config_ksp_compiler
+package com.sliver.config.compiler
 
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
