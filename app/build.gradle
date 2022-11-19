@@ -47,5 +47,4 @@ dependencies {
 
     implementation project(path: ':common')
     //implementation 'com.sliver:common:1.0'
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.7.21"
 }

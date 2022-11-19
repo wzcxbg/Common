@@ -1,3 +1,13 @@
 package com.sliver.config
 
-abstract class ConfigBase(protected open val target: ConfigTarget)
+class ConfigBase : ConfigBasic {
+    private var target: ConfigTarget? = null
+
+    override fun setTarget(target: ConfigTarget) {
+        this.target = target
+    }
+
+    override fun getTarget(): ConfigTarget {
+        return requireNotNull(target)
+    }
+}

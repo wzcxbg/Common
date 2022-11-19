@@ -3,20 +3,27 @@ package com.sliver.common
 import android.util.Log
 import com.sliver.common.base.BaseActivity
 import com.sliver.common.databinding.ActivityMainBinding
-import com.sliver.common.preference.config.PreferenceTarget
-import com.sliver.common.preference.config.UserConfig
+import com.sliver.common.preference.config.*
+import com.sliver.config.Config
+import com.sliver.config.ConfigOf
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initView() {
-        val preferenceTarget = PreferenceTarget(this)
-        preferenceTarget.initialize("user")
-        val userConfig = UserConfig(preferenceTarget)
+        Config.create<User>(PreferenceTarget(this))
+        val userConfig = ConfigOf<User>()
+
+        Log.e(TAG, "initView: ${userConfig.getUsername()} ${userConfig.getPassword()} ${userConfig.getAge()}")
+        userConfig.setUsername("1")
+            .setPassword("1")
+            .setAge(1)
 
         Log.e(TAG, "initView: ${userConfig.username} ${userConfig.password} ${userConfig.age}")
 
-        userConfig.setUsername("lisi")
-            .setPassword("87654321")
-            .setAge(25)
+        userConfig.setUsername("12")
+            .setPassword("12")
+            .setAge(12)
+
+        Log.e(TAG, "initView: ${userConfig.username} ${userConfig.password} ${userConfig.age}")
 
         userConfig.username = "wangwu"
         userConfig.password = "11223344"
