@@ -1,14 +1,13 @@
-package com.sliver.common.startup
+package com.sliver.config.startup
 
 import android.content.Context
 import androidx.annotation.Keep
 import androidx.startup.Initializer
-import com.sliver.common.preference.config.User
 
 @Keep
-class PreferenceUtilInitializer : Initializer<Int> {
-    override fun create(context: Context): Int {
-        return 0
+class ConfigInitializer : Initializer<Unit> {
+    override fun create(context: Context) {
+
     }
 
     override fun dependencies(): MutableList<Class<out Initializer<*>>> {

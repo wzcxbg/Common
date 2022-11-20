@@ -12,6 +12,7 @@ import com.google.devtools.ksp.validate
 import com.sliver.config.ConfigBase
 import com.sliver.config.ConfigBasic
 import com.sliver.config.ConfigTarget
+import com.sliver.config.annotation.InitializeWithTarget
 import com.sliver.config.annotation.PreferenceKey
 import com.sliver.config.annotation.PreferenceName
 import com.sliver.config.extension.addFunctions
