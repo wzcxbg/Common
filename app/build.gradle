@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -33,6 +34,11 @@ android {
     buildFeatures {
         viewBinding true
     }
+    kotlin {
+        sourceSets {
+            main.kotlin.srcDirs += 'build/generated/ksp'
+        }
+    }
 }
 
 dependencies {
@@ -47,4 +53,7 @@ dependencies {
 
     implementation project(path: ':common')
     //implementation 'com.sliver:common:1.0'
+
+    implementation project(path: ':config-android')
+    ksp project(':config-ksp-compiler')
 }

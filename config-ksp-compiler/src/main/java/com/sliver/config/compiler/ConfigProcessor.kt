@@ -1,5 +1,6 @@
 package com.sliver.config.compiler
 
+import androidx.startup.Initializer
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getDeclaredProperties
@@ -17,6 +18,7 @@ import com.sliver.config.annotation.PreferenceKey
 import com.sliver.config.annotation.PreferenceName
 import com.sliver.config.extension.addFunctions
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
@@ -29,6 +31,12 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
 
     @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        //技巧：
+        //1.需要生成对应类的变量应不需要加载该类的KClass、Class，而只需要该类的包名和类名
+        //val className = ClassName("kotlin", "Int")
+        //2.需要用到类的地方优先使用ClassName、TypeName
+        //val typeName = typeNameOf<MutableList<Class<out Initializer<*>>>>()
+
         val symbols = resolver.getSymbolsWithAnnotation(PreferenceName::class.qualifiedName!!)
 
         Stream.of(symbols)
@@ -135,8 +143,84 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
             }
             .collect(Collectors.counting())
 
-        return Stream.of(symbols)
+        val symbolsInitializeWithTarget = resolver.getSymbolsWithAnnotation(InitializeWithTarget::class.qualifiedName!!)
+        val configClassName = ClassName("com.sliver.config", "Config")
+        val targetClassName = ClassName("com.sliver.config.target", "PreferenceTarget")
+        val initializerClassName = ClassName("androidx.startup", "Initializer")
+        val contextClassName = ClassName("android.content", "Context")
+        Stream.of(symbolsInitializeWithTarget)
             .flatMap { it.asStream() }
+            .filter { it.validate() }
+            .filter { it is KSClassDeclaration }
+            .map { it as KSClassDeclaration }
+            .map {
+                val simpleName = it.simpleName.asString()
+                val typeName = it.asStarProjectedType().toTypeName()
+                val outPackageName = "com.sliver.config.startup"
+                val outSimpleName = "${simpleName}ConfigInitializer"
+                val outClassName = ClassName(outPackageName, outSimpleName)
+                FileSpec.builder(outClassName.packageName, outClassName.simpleName)
+                    .addImport(configClassName.packageName, configClassName.simpleName)
+                    .addImport(targetClassName.packageName, targetClassName.simpleName)
+                    .addImport(initializerClassName.packageName, initializerClassName.simpleName)
+                    .addType(
+                        TypeSpec.classBuilder(outClassName.simpleName)
+                            .addSuperinterface(initializerClassName.parameterizedBy(typeName))
+                            .addFunction(
+                                FunSpec.builder("create")
+                                    .addParameter("context", contextClassName)
+                                    .addModifiers(KModifier.OVERRIDE)
+                                    .addStatement("·return Config.create<${simpleName}>(PreferenceTarget(context))")
+                                    .returns(typeName)
+                                    .build()
+                            )
+                            .addFunction(
+                                FunSpec.builder("dependencies")
+                                    .addModifiers(KModifier.OVERRIDE)
+                                    .addStatement("·return mutableListOf()")
+                                    .returns(typeNameOf<MutableList<Class<out Initializer<*>>>>())
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+                    .writeTo(environment.codeGenerator, false)
+                outClassName
+            }
+            .collect(Collectors.toList())
+            .let { classNames ->
+                if (classNames.isEmpty()) return@let
+                val outPackageName = "com.sliver.config.startup"
+                val outSimpleName = "ConfigInitializer"
+                val outClassName = ClassName(outPackageName, outSimpleName)
+                val initializerClasses = Stream.of(classNames)
+                    .flatMap { it.stream() }
+                    .map { "${it.simpleName}::class.java" }
+                    .collect(Collectors.joining(", "))
+                FileSpec.builder(outClassName.packageName, outClassName.simpleName)
+                    .addType(
+                        TypeSpec.classBuilder(outClassName.simpleName)
+                            .addSuperinterface(initializerClassName.parameterizedBy(Unit::class.asTypeName()))
+                            .addFunction(
+                                FunSpec.builder("create")
+                                    .addParameter("context", contextClassName)
+                                    .addModifiers(KModifier.OVERRIDE)
+                                    .build()
+                            )
+                            .addFunction(
+                                FunSpec.builder("dependencies")
+                                    .addModifiers(KModifier.OVERRIDE)
+                                    .addStatement("·return mutableListOf(${initializerClasses})")
+                                    .returns(typeNameOf<MutableList<Class<out Initializer<*>>>>())
+                                    .build()
+                            )
+                            .build()
+                    )
+                    .build()
+                    .writeTo(environment.codeGenerator, false)
+            }
+
+        return Stream.concat(symbols.asStream(), symbolsInitializeWithTarget.asStream())
             .filter { !it.validate() }
             .collect(Collectors.toList())
     }

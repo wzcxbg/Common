@@ -3,7 +3,6 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
     id 'maven-publish'
-    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -36,11 +35,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    kotlin {
-        sourceSets {
-            main.kotlin.srcDirs += 'build/generated/ksp'
-        }
-    }
 }
 
 dependencies {
@@ -53,8 +47,6 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
     implementation 'androidx.startup:startup-runtime:1.1.1'
-    api project(':config-annotation')
-    ksp project(':config-ksp-compiler')
 }
 
 
