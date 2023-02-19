@@ -1,5 +1,5 @@
 jdk:
   - openjdk11
-before_install:
-  - sdk install kotlin 1.8.10
-  - sdk use kotlin 1.8.10
+#before_install:
+#  - sdk install kotlin 1.8.0
+#  - sdk use kotlin 1.8.0
