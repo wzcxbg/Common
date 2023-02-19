@@ -1,6 +1,5 @@
 package com.sliver.config.compiler
 
-import androidx.startup.Initializer
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.getAnnotationsByType
 import com.google.devtools.ksp.getDeclaredProperties
@@ -13,12 +12,10 @@ import com.google.devtools.ksp.validate
 import com.sliver.config.ConfigBase
 import com.sliver.config.ConfigBasic
 import com.sliver.config.ConfigTarget
-import com.sliver.config.annotation.InitializeWithTarget
 import com.sliver.config.annotation.PreferenceKey
 import com.sliver.config.annotation.PreferenceName
 import com.sliver.config.extension.addFunctions
 import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
 import com.squareup.kotlinpoet.ksp.writeTo
@@ -27,8 +24,6 @@ import java.util.stream.Stream
 import kotlin.streams.asStream
 
 class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : SymbolProcessor {
-    private val excludeProcessSet = HashSet<String>()
-
     @OptIn(KspExperimental::class)
     override fun process(resolver: Resolver): List<KSAnnotated> {
         //技巧：
@@ -39,15 +34,13 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
 
         val symbols = resolver.getSymbolsWithAnnotation(PreferenceName::class.qualifiedName!!)
 
+        //生成Config类
         Stream.of(symbols)
             .flatMap { it.asStream() }
             .filter { it.validate() }
             .filter { it is KSClassDeclaration }
             .map { it as KSClassDeclaration }
-            .filter { it.toClassName().toString() !in excludeProcessSet }
-            .peek { excludeProcessSet.add("${it.toClassName()}Config") }
             .peek { classDeclaration ->
-                val annotation = classDeclaration.getAnnotationsByType(PreferenceName::class).first()
                 val packageName = classDeclaration.packageName.asString()
                 val fileName = "${classDeclaration.toClassName().simpleName}Config"
                 val typeName = "${classDeclaration.toClassName().simpleName}Config"
@@ -59,11 +52,6 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                     .addImport(ConfigTarget::class.asClassName().packageName, ConfigTarget::class.asClassName().simpleName)
                     .addImport(PreferenceName::class.asClassName().packageName, PreferenceName::class.asClassName().simpleName)
                     .addType(TypeSpec.classBuilder(typeName)
-                        .addAnnotation(
-                            AnnotationSpec.builder(PreferenceName::class)
-                                .addMember("\"${annotation.name}\"")
-                                .build()
-                        )
                         .superclass(classDeclaration.toClassName())
                         .addSuperinterface(ConfigBasic::class, CodeBlock.of("${ConfigBase::class.asClassName().simpleName}()"))
                         .addProperties(Stream.of(classDeclaration.getDeclaredProperties())
@@ -143,6 +131,7 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
             }
             .collect(Collectors.counting())
 
+        /*//生成Initializer
         val symbolsInitializeWithTarget = resolver.getSymbolsWithAnnotation(InitializeWithTarget::class.qualifiedName!!)
         val configClassName = ClassName("com.sliver.config", "Config")
         val targetClassName = ClassName("com.sliver.config.target", "PreferenceTarget")
@@ -218,9 +207,9 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                     )
                     .build()
                     .writeTo(environment.codeGenerator, false)
-            }
-
-        return Stream.concat(symbols.asStream(), symbolsInitializeWithTarget.asStream())
+            }*/
+        return Stream.of(symbols)
+            .flatMap { it.asStream() }
             .filter { !it.validate() }
             .collect(Collectors.toList())
     }

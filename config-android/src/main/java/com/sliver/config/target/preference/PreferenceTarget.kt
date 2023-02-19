@@ -1,18 +1,13 @@
-package com.sliver.config.target
+package com.sliver.config.target.preference
 
 import android.content.Context
 import android.content.SharedPreferences
 import com.sliver.config.ConfigTarget
 
-class PreferenceTarget(private val context: Context) : ConfigTarget {
-    private lateinit var preferences: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
-
-    override fun initialize(name: String?) {
-        val preferenceName = name ?: (context.packageName + "_preferences")
-        preferences = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
-        editor = preferences.edit()
-    }
+class PreferenceTarget(context: Context, name: String?) : ConfigTarget {
+    private val preferenceName = name ?: (context.packageName + "_preferences")
+    private var preferences = context.getSharedPreferences(preferenceName, Context.MODE_PRIVATE)
+    private var editor: SharedPreferences.Editor = preferences.edit()
 
     override fun set(key: String, value: Any?) {
         if (value is String) {

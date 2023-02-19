@@ -1,10 +1,8 @@
 package com.sliver.common
 
-import com.sliver.config.annotation.InitializeWithTarget
 import com.sliver.config.annotation.PreferenceKey
 import com.sliver.config.annotation.PreferenceName
 
-@InitializeWithTarget
 @PreferenceName("user")
 open class User {
     @PreferenceKey("username")
