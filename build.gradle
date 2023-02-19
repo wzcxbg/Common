@@ -7,6 +7,14 @@ plugins {
     id 'com.google.devtools.ksp' version "1.8.10-1.0.9" apply false
 }
 
+allprojects {
+    version = "1.0.0"
+    group = 'com.sliver'
+}
+allprojects { project ->
+    logger.error("I am an {} log message", project.group)
+}
+
 project(':common') {
     apply plugin: 'com.android.library'
     apply plugin: 'org.jetbrains.kotlin.android'
