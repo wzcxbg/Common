@@ -9,16 +9,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     override fun initView() {
         val userConfig = PreferenceConfigOf<User>()
 
-        Log.e(TAG, "initView: ${userConfig.getUsername()} ${userConfig.getPassword()} ${userConfig.getAge()}")
+        /*Log.e(TAG, "initView: ${userConfig.getUsername()} ${userConfig.getPassword()} ${userConfig.getAge()}")
         userConfig.setUsername("1")
             .setPassword("1")
-            .setAge(1)
+            .setAge(1)*/
 
         Log.e(TAG, "initView: ${userConfig.username} ${userConfig.password} ${userConfig.age}")
 
-        userConfig.setUsername("12")
+        /*userConfig.setUsername("12")
             .setPassword("12")
-            .setAge(12)
+            .setAge(12)*/
 
         Log.e(TAG, "initView: ${userConfig.username} ${userConfig.password} ${userConfig.age}")
 

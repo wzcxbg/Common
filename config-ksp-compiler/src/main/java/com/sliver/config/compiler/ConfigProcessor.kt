@@ -101,6 +101,7 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                             .collect(Collectors.toList()))
                         .build()
                     )
+                    /*去除扩展方法
                     .addFunctions(Stream.of(classDeclaration.getDeclaredProperties())
                         .flatMap { it.asStream() }
                         .flatMap {
@@ -121,11 +122,12 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                                             .defaultValue("this.${propName}")
                                             .build()
                                     )
-                                    .addStatement("return·run·{·(this·as·$typeName).$getFunName(default)·}")
+                                    //.addStatement("return·run·{·(this·as·$typeName).$getFunName(default)·}")
+                                    .addStatement("return·run·{·(this·as·$typeName).${targetPropName}.get(\"$keyValue\",·default)·}")
                                     .build(),
                             )
                         }
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toList()))*/
                     .build()
                     .writeTo(environment.codeGenerator, false)
             }
