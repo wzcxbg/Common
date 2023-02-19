@@ -19,11 +19,7 @@ android {
     }
 
     buildTypes {
-        debug {
-            //sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/debug/kotlin'
-        }
         release {
-            //sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/release/kotlin'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -38,11 +34,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    /*kotlin {
-        sourceSets {
-            main.kotlin.srcDirs += 'build/generated/ksp'
-        }
-    }*/
     kotlin {
         sourceSets.main {
             kotlin.srcDir("build/generated/ksp/main/kotlin")
@@ -64,8 +55,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(path: ':common')
-//    implementation 'com.github.wzcxbg:common:v1.0.0'
-
     implementation project(path: ':config-android')
+    implementation project(path: ':config-annotation')
     ksp project(':config-ksp-compiler')
 }
