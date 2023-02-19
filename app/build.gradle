@@ -20,10 +20,10 @@ android {
 
     buildTypes {
         debug {
-            sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/debug/kotlin'
+            //sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/debug/kotlin'
         }
         release {
-            sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/release/kotlin'
+            //sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/release/kotlin'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -43,6 +43,14 @@ android {
             main.kotlin.srcDirs += 'build/generated/ksp'
         }
     }*/
+    kotlin {
+        sourceSets.main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+        sourceSets.test {
+            kotlin.srcDir("build/generated/ksp/test/kotlin")
+        }
+    }
 }
 
 dependencies {
