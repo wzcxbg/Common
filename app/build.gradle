@@ -56,7 +56,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(path: ':common')
-    //implementation 'com.sliver:common:1.0'
+//    implementation 'com.github.wzcxbg:common:v1.0.0'
 
     implementation project(path: ':config-android')
     ksp project(':config-ksp-compiler')

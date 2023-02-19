@@ -2,7 +2,6 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-parcelize'
-    id 'maven-publish'
 }
 
 android {
@@ -47,39 +46,4 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
     implementation 'androidx.startup:startup-runtime:1.1.1'
-}
-
-
-afterEvaluate {
-    publishing {
-        repositories {
-            maven {
-                name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/wzcxbg/common")
-                Properties properties = new Properties()
-                properties.load(project.rootProject.file('local.properties').newDataInputStream())
-                def uname = properties.getProperty('github.uname')
-                def token = properties.getProperty('github.token')
-                credentials {
-                    username = uname
-                    password = token
-                }
-            }
-        }
-
-        publications {
-            release(MavenPublication) {
-                from components.release
-                groupId = 'com.sliver'
-                artifactId = 'common'
-                version = '1.0'
-            }
-            debug(MavenPublication) {
-                from components.debug
-                groupId = 'com.sliver'
-                artifactId = 'common-debug'
-                version = '1.0'
-            }
-        }
-    }
 }
