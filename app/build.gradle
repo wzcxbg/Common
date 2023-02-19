@@ -19,7 +19,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/debug/kotlin'
+        }
         release {
+            sourceSets.main.kotlin.srcDirs += 'build/generated/ksp/release/kotlin'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -34,11 +38,11 @@ android {
     buildFeatures {
         viewBinding true
     }
-    kotlin {
+    /*kotlin {
         sourceSets {
             main.kotlin.srcDirs += 'build/generated/ksp'
         }
-    }
+    }*/
 }
 
 dependencies {
