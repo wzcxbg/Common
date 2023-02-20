@@ -1,11 +1,8 @@
-package androidx.startup;
+package androidx.startup
 
-import android.content.Context;
+import android.content.Context
 
-import java.util.List;
-
-public interface Initializer<T> {
-    T create(Context context);
-
-    List<Class<? extends Initializer<?>>> dependencies();
+interface Initializer<T> {
+    fun create(context: Context?): T
+    fun dependencies(): List<Class<out Initializer<*>?>?>?
 }
