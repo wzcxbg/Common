@@ -9,7 +9,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.sliver.config.target.preference.PreferenceConfigFactoryInitializer"
+                android:name="com.sliver.common.startup.ApplicationInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>
