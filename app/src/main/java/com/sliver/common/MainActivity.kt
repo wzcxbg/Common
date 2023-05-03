@@ -13,6 +13,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         userConfig.setUsername("1")
             .setPassword("1")
             .setAge(1)*/
+        //TODO 使用javassist实现插件功能 hook log
 
         Log.e(TAG, "initView: ${userConfig.username} ${userConfig.password} ${userConfig.age}")
 
