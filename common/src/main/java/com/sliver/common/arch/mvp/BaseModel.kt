@@ -1,4 +1,5 @@
 package com.sliver.common.arch.mvp
 
-class BaseContract {
+open class BaseModel : IView {
+
 }
