@@ -1,8 +1,12 @@
 package com.sliver.common
 
+import android.content.Intent
 import android.util.Log
+import androidx.constraintlayout.helper.widget.Carousel
+import androidx.core.view.DisplayCompat
 import com.sliver.common.base.BaseActivity
 import com.sliver.common.databinding.ActivityMainBinding
+import com.sliver.common.login.LoginActivity
 import com.sliver.config.target.preference.PreferenceConfigOf
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -28,5 +32,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         userConfig.age = 25
 
         Log.e(TAG, "initView: ${userConfig.username} ${userConfig.password} ${userConfig.age}")
+
+        startActivity(Intent(this, LoginActivity::class.java))
     }
 }
