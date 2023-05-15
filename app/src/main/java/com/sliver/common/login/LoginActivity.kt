@@ -11,7 +11,7 @@ import com.sliver.common.databinding.ActivityLoginBinding
  * 可能存在需要在Model层创建Repository的情况
  */
 class LoginActivity : BaseMvpActivity<ActivityLoginBinding>(), LoginContract.View {
-    private lateinit var presenter: LoginPresenter
+    private val presenter by presenters<LoginPresenter>()
     private lateinit var dialog: ProgressDialog
 
     override fun initData() {

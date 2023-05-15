@@ -3,7 +3,7 @@ package com.sliver.common.login
 import com.sliver.common.arch.mvp.BasePresenter
 
 class LoginPresenter : BasePresenter<LoginContract.View>(), LoginContract.Presenter {
-    private lateinit var loginModel: LoginModel
+    private val loginModel by models<LoginModel>()
 
     override fun login(username: String, password: String) {
         view.showLoadingDialog()

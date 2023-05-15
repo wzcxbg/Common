@@ -8,36 +8,21 @@ import java.lang.ref.WeakReference
 open class BasePresenter<V : IView> : IPresenter<V> {
     private var viewReference: WeakReference<V>? = null
     protected val view: V get() = requireNotNull(viewReference?.get())
-    private val models = ArrayList<BaseModel>()
 
     override fun onAttach(view: V) {
         this.viewReference = WeakReference(view)
-        this.models.addAll(createModels())
     }
 
     override fun onDetach() {
         this.viewReference?.clear()
         this.viewReference = null
-        this.models.clear()
     }
 
-    private fun createModels(): List<BaseModel> {
-        val models = ArrayList<BaseModel>()
-        val declaredFields = this.javaClass.declaredFields
-        for (declaredField in declaredFields) {
-            declaredField.isAccessible = true
-            val fieldClass = declaredField.type
-            val assignableFromBaseModel = BaseModel::class.java.isAssignableFrom(fieldClass)
-            if (!assignableFromBaseModel) continue
-            val model = createModel(fieldClass as Class<out BaseModel>)
-            declaredField.set(this, model)
-            models.add(model)
+    protected inline fun <reified T : BaseModel> models(): Lazy<T> {
+        return lazy<T> {
+            val constructor = T::class.java.getConstructor()
+            val model = constructor.newInstance()
+            model
         }
-        return models
-    }
-
-    private fun createModel(fieldClass: Class<out BaseModel>): BaseModel {
-        val constructor = fieldClass.getConstructor()
-        return constructor.newInstance()
     }
 }
