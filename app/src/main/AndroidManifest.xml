@@ -26,7 +26,10 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".login.LoginActivity"
+            android:name=".login.mvp.LoginActivity"
+            android:exported="true" />
+        <activity
+            android:name=".login.mvvm.LoginActivity"
             android:exported="true" />
     </application>
 

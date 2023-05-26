@@ -1,4 +1,4 @@
-package com.sliver.common.login
+package com.sliver.common.login.mvp
 
 import com.sliver.common.arch.mvp.BasePresenter
 
