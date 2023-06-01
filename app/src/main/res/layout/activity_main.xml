@@ -6,13 +6,46 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.sliver.common.CustomTreeLayout
+        android:id="@+id/custom_tree_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#4CAF50"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/lan_java"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00BCD4"
+            android:gravity="start|center_vertical"
+            android:minHeight="50dp"
+            android:text="Java"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/lan_kotlin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#00BCD4"
+            android:gravity="start|center_vertical"
+            android:minHeight="50dp"
+            android:text="Kotlin"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/lan_cpp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="#00BCD4"
+            android:gravity="start|center_vertical"
+            android:minHeight="50dp"
+            android:text="C++"
+            android:textColor="@color/white" />
+    </com.sliver.common.CustomTreeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
