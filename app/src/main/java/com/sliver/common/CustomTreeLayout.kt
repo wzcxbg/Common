@@ -63,19 +63,19 @@ class CustomTreeLayout : LinearLayout {
 
     override fun onDraw(canvas: Canvas) {
         //画树干，仅支持从上往下延申的树干
-        var childHeightMin = measuredHeight
-        var childHeightMax = 0
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            val childCenterY = (child.top + child.bottom) / 2
-            if (childCenterY < childHeightMin) {
-                childHeightMin = childCenterY
-            }
-            if (childCenterY > childHeightMax) {
-                childHeightMax = childCenterY
-            }
-        }
         if (childCount > 0) {
+            var childHeightMin = measuredHeight
+            var childHeightMax = 0
+            for (i in 0 until childCount) {
+                val child = getChildAt(i)
+                val childCenterY = (child.top + child.bottom) / 2
+                if (childCenterY < childHeightMin) {
+                    childHeightMin = childCenterY
+                }
+                if (childCenterY > childHeightMax) {
+                    childHeightMax = childCenterY
+                }
+            }
             canvas.drawLine(
                 treeRootOffset.toFloat(), paddingTop.toFloat(),
                 treeRootOffset.toFloat(), (childHeightMax - treeTrunkCubicLen).toFloat(),
