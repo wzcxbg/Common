@@ -27,13 +27,14 @@ open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
         val superClass = this.javaClass.genericSuperclass as ParameterizedType
         val bindingClass = superClass.actualTypeArguments[0] as Class<*>
         val method = bindingClass.getMethod("inflate", LayoutInflater::class.java)
-
         val binding = method.invoke(null, layoutInflater) as T
+
         bindViews(binding, this)
         setContentView(binding.root)
 
         val builder = buildParams()
-        builder?.customView(null)
+        builder?.customView(null as T?)
+        builder?.customView(null as View?)
         builder?.applyParameter(this)
     }
 
@@ -41,12 +42,15 @@ open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
 
     }
 
-    protected open fun buildParams(): Builder? {
+    protected open fun buildParams(): Builder<T>? {
         return null
     }
 
 
-    class Builder(private val context: Context) {
+    class Builder<T : ViewBinding> {
+        private val context: Context
+        private var binding: T? = null
+
         private var view: View? = null
         private var gray = 0.5f
         private var width = WindowManager.LayoutParams.WRAP_CONTENT
@@ -55,8 +59,22 @@ open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
         private var anime = android.R.style.Animation_Dialog
         private var cancelable = true
         private var padding = RectF(0f, 0f, 0f, 0f)
+        private var listener: ((binding: T, dialog: Dialog) -> Unit)? = null
+
+        constructor(context: Context) {
+            this.context = context
+            this.binding = null
+        }
+
+        constructor(binding: T) {
+            this.context = binding.root.context
+            this.binding = binding
+        }
 
         fun customView(view: View?) = apply { this.view = view }
+        fun customView(binding: T?) = apply { this.binding = binding }
+        fun customView(clazz: Class<T>) = apply { this.binding = create(clazz) }
+        fun applyBinding(listener: T.(Dialog) -> Unit) = apply { this.listener = listener }
         fun backgroundGray(gray: Float) = apply { this.gray = gray }
         fun width(width: Int) = apply { this.width = width }
         fun height(height: Int) = apply { this.height = height }
@@ -66,7 +84,6 @@ open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
         fun padding(padding: Float) = apply { this.padding = RectF(padding, padding, padding, padding) }
         fun padding(left: Float, top: Float, right: Float, bottom: Float) =
             apply { this.padding = RectF(left, top, right, bottom) }
-
 
         fun applyParameter(dialog: Dialog): Dialog {
             val window = dialog.window
@@ -92,7 +109,9 @@ open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
 
             dialog.setCanceledOnTouchOutside(cancelable)
             dialog.setCancelable(cancelable)
-            dialog.setContentView(view ?: return dialog)
+            dialog.setContentView(view ?: binding?.root ?: return dialog)
+
+            listener?.invoke(binding ?: return dialog, dialog)
             return dialog
         }
 
@@ -100,43 +119,11 @@ open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
             val dialog = Dialog(context)
             return applyParameter(dialog)
         }
-    }
 
-
-    class BindingBuilder<T : ViewBinding>(private val binding: T) {
-        private val context = binding.root.context
-        private val builder = Builder(context)
-        private var listener: ((binding: T, dialog: Dialog) -> Unit)? = null
-
-        fun bindView(listener: T.(Dialog) -> Unit) = apply { this.listener = listener }
-        fun backgroundGray(gray: Float) = apply { builder.backgroundGray(gray) }
-        fun width(width: Int) = apply { builder.width(width) }
-        fun height(height: Int) = apply { builder.height(height) }
-        fun gravity(gravity: Int) = apply { builder.gravity(gravity) }
-        fun animate(animateId: Int) = apply { builder.animate(animateId) }
-        fun cancelable(cancelAble: Boolean) = apply { builder.cancelable(cancelAble) }
-        fun padding(padding: Float) = apply { builder.padding(padding) }
-        fun padding(left: Float, top: Float, right: Float, bottom: Float) =
-            apply { builder.padding(left, top, right, bottom) }
-
-        fun applyParameter(dialog: Dialog): Dialog {
-            builder.customView(binding.root)
-            builder.applyParameter(dialog)
-            listener?.invoke(binding, dialog)
-            return dialog
-        }
-
-        fun build(): Dialog {
-            val dialog = Dialog(context)
-            return applyParameter(dialog)
-        }
-    }
-
-    companion object {
-        inline fun <reified T : ViewBinding> builder(context: Context): BindingBuilder<T> {
-            val inflate = T::class.java.getMethod("inflate", LayoutInflater::class.java)
-            val binding = inflate.invoke(inflate, LayoutInflater.from(context)) as T
-            return BindingBuilder(binding)
+        private fun <T : ViewBinding> create(clazz: Class<T>): T {
+            val inflate = clazz.getMethod("inflate", LayoutInflater::class.java)
+            val binding = inflate.invoke(inflate, LayoutInflater.from(context))
+            return binding as T
         }
     }
 }
