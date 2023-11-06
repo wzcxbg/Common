@@ -19,33 +19,37 @@ import kotlin.math.roundToInt
  * 局限：带泛型的类及其子类不能混淆
  * 反射的泛型类不能混淆
  */
+inline fun <reified T : CustomDialog<out ViewBinding>> Activity.dialogs(): Lazy<T> {
+    val constructor = T::class.java.getConstructor(Context::class.java)
+    return lazy(LazyThreadSafetyMode.NONE) { constructor.newInstance(this) }
+}
 
-open class CustomDialog<T : ViewBinding>(context: Context) : Dialog(context) {
+inline fun <reified T : CustomDialog<out ViewBinding>> Fragment.dialogs(): Lazy<T> {
+    val constructor = T::class.java.getConstructor(Context::class.java)
+    return lazy(LazyThreadSafetyMode.NONE) { constructor.newInstance(requireActivity()) }
+}
+
+open class CustomDialog<T : ViewBinding>(context: Context) : ComponentDialog(context) {
+    protected val builder = Builder<T>(context)
+    protected val binding = createBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        builder.customView(binding.root)
+        initView(builder)
+        builder.applyParameter(this)
+    }
+
+    open fun initView(builder: Builder<T>) {
+
+    }
+
+    private fun createBinding(): T {
         val superClass = this.javaClass.genericSuperclass as ParameterizedType
         val bindingClass = superClass.actualTypeArguments[0] as Class<*>
         val method = bindingClass.getMethod("inflate", LayoutInflater::class.java)
-        val binding = method.invoke(null, layoutInflater) as T
-
-        bindViews(binding, this)
-        setContentView(binding.root)
-
-        val builder = buildParams()
-        builder?.customView(null as T?)
-        builder?.customView(null as View?)
-        builder?.applyParameter(this)
+        return method.invoke(null, layoutInflater) as T
     }
-
-    protected open fun bindViews(binding: T, dialog: Dialog) {
-
-    }
-
-    protected open fun buildParams(): Builder<T>? {
-        return null
-    }
-
 
     class Builder<T : ViewBinding> {
         private val context: Context
