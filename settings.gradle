@@ -30,7 +30,7 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = "Common"
+rootProject.name = "common"
 include ':app'
 include ':common'
 include ':config-ksp-compiler'
