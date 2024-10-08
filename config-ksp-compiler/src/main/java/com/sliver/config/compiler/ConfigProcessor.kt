@@ -44,6 +44,7 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                 val packageName = classDeclaration.packageName.asString()
                 val fileName = "${classDeclaration.toClassName().simpleName}Config"
                 val typeName = "${classDeclaration.toClassName().simpleName}Config"
+                val returnType = ClassName(packageName, typeName)
                 val targetPropName = "getTarget()"
                 val configPropName = "super"
                 FileSpec.builder(packageName, fileName)
@@ -87,6 +88,7 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                                     FunSpec.builder(setFunName)
                                         .addParameter(propName, it.type.toTypeName().copy(true))
                                         .addStatement("return·apply·{ ${targetPropName}.set(\"$keyValue\",·$propName)·}")
+                                        .returns(returnType)
                                         .build(),
                                     FunSpec.builder(getFunName)
                                         .addParameter(
@@ -95,6 +97,7 @@ class ConfigProcessor(private val environment: SymbolProcessorEnvironment) : Sym
                                                 .build()
                                         )
                                         .addStatement("return·run·{·${targetPropName}.get(\"$keyValue\",·default)·as·${it.type.resolve().declaration.simpleName.asString()}?·}")
+                                        .returns(it.type.resolve().toTypeName().copy(nullable = true))
                                         .build(),
                                 )
                             }
